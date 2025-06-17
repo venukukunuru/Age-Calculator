@@ -10,7 +10,7 @@ A simple web application that calculates your age based on the date of birth you
 
 ---
 
-## Porject URL
+## Project URL
 
 https://github.com/venukukunuru/Age-Calculator
 
