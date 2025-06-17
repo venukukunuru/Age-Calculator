@@ -6,9 +6,13 @@ A simple web application that calculates your age based on the date of birth you
 
 ## 🚀 Live Demo
 
-👉 **[View Project on GitHub Pages](https://venukukunuru.github.io/Age-Calculator/)**
+👉 **[View Project on GitHub Pages](https://venukukunuru.github.io/Age-Calculator)**
 
 ---
+
+## Porject URL
+
+https://github.com/venukukunuru/Age-Calculator
 
 ## 📂 Project Structure
 
@@ -25,11 +29,12 @@ Age-Calculator/
 ### 1. Clone the Repository
 
 ```bash
+
 git clone https://github.com/venukukunuru/Age-Calculator.git
 
 2. Navigate to the Project Directory
-
     cd Age-Calculator
+
 3.. Open the HTML File
 You can directly open the agePicker.html file in your browser:
 
