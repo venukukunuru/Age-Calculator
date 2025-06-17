@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Luxon CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/luxon@2.0.2/build/global/luxon.min.js"></script>
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f0f0;
+            /* Light background similar to image */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .calculator-container {
+            background-color: #ffffff;
+            padding: 2.5rem;
+            /* Increased padding */
+            border-radius: 1rem;
+            /* More rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            /* Softer shadow */
+            max-width: 28rem;
+            /* Increased max-width */
+            width: 90%;
+            /* Responsive width */
+            text-align: center;
+        }
+
+        .input-group {
+            position: relative;
+            margin-top: 1.5rem;
+            /* Increased margin */
+            margin-bottom: 2.5rem;
+            /* Increased margin */
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            /* Adjusted padding */
+            border: 1px solid #d1d5db;
+            /* Light gray border */
+            border-radius: 0.5rem;
+            /* Rounded corners for input */
+            font-size: 1.125rem;
+            /* Larger font size */
+            box-sizing: border-box;
+            padding-right: 3rem;
+            /* Space for icon */
+            outline: none;
+            /* Remove default outline */
+            transition: border-color 0.2s;
+        }
+
+        .input-field:focus {
+            border-color: #3b82f6;
+            /* Blue border on focus */
+        }
+
+        .calendar-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            /* Gray icon color */
+            cursor: pointer;
+            pointer-events: none;
+            /* Allow clicks to pass through to input */
+        }
+
+        .calculate-button {
+            width: 100%;
+            padding: 0.85rem 1.5rem;
+            /* Adjusted padding */
+            background-color: #6b7280;
+            /* Darker gray for button */
+            color: #ffffff;
+            border: none;
+            border-radius: 0.5rem;
+            /* Rounded corners */
+            font-size: 1.25rem;
+            /* Larger font size */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            /* Button shadow */
+        }
+
+        .calculate-button:hover {
+            background-color: #4b5563;
+            /* Even darker gray on hover */
+        }
+
+        .result-text {
+            margin-top: 2.5rem;
+            /* Increased margin */
+            font-size: 1.5rem;
+            /* Larger font size */
+            color: #333333;
+            /* Darker text color */
+            font-weight: 500;
+        }
+
+        .error-message {
+            color: #ef4444;
+            /* Red for error messages */
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="calculator-container">
+        <h1 class="text-3xl font-semibold mb-6">Age Calculator</h1>
+
+        <div class="input-group">
+            <label for="birthdate" class="block text-gray-700 text-lg mb-2 text-left">Enter your birth date:</label>
+            <input type="text" id="birthdate" class="input-field" placeholder="DD/MM/YYYY" readonly>
+            <span class="calendar-icon">📅</span> <!-- Calendar emoji as icon -->
+            <div id="birthdate-error" class="error-message hidden"></div>
+        </div>
+
+        <button id="calculate-btn" class="calculate-button">Calculate</button>
+
+        <div id="result" class="result-text hidden">
+            <!-- Age will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        // Ensure Luxon is globally available as `luxon.DateTime`
+        const DateTime = luxon.DateTime;
+
+        // Get elements from the DOM
+        const birthdateInput = document.getElementById('birthdate');
+        const birthdateError = document.getElementById('birthdate-error');
+        const calculateBtn = document.getElementById('calculate-btn');
+        const resultDiv = document.getElementById('result');
+
+        // Initialize Flatpickr on the birthdate input field
+        const fp = flatpickr(birthdateInput, {
+            dateFormat: "d/m/Y", // Desired date format
+            maxDate: "today",     // Prevent selecting future dates
+            altInput: false,      // Show the actual input value formatted
+            allowInput: false,    // Prevent manual text input
+            onClose: function (selectedDates, dateStr, instance) {
+                // Clear error message when date is selected
+                birthdateError.classList.add('hidden');
+                birthdateError.textContent = '';
+            }
+        });
+
+        // Event listener for the calculate button
+        calculateBtn.addEventListener('click', () => {
+            const birthdateStr = birthdateInput.value;
+
+            // Basic validation: Check if a date is selected
+            if (!birthdateStr) {
+                birthdateError.classList.remove('hidden');
+                birthdateError.textContent = 'Please enter your birthdate.';
+                resultDiv.classList.add('hidden');
+                return;
+            }
+
+            // Parse the birthdate string using Luxon with the specified format (DD/MM/YYYY)
+            const birthdate = DateTime.fromFormat(birthdateStr, "dd/MM/yyyy");
+
+            // Validate if the parsed date is valid and not in the future
+            if (!birthdate.isValid) {
+                birthdateError.classList.remove('hidden');
+                birthdateError.textContent = 'Invalid birthdate format. Please use DD/MM/YYYY.';
+                resultDiv.classList.add('hidden');
+                return;
+            }
+
+            const today = DateTime.now();
+
+            if (birthdate > today) {
+                birthdateError.classList.remove('hidden');
+                birthdateError.textContent = 'Birthdate cannot be in the future.';
+                resultDiv.classList.add('hidden');
+                return;
+            }
+
+            // Calculate the age using Luxon's `diff` method
+            // We want years, months, and days
+            const age = today.diff(birthdate, ['years', 'months', 'days']).toObject();
+
+            const years = Math.floor(age.years || 0);
+            const months = Math.floor(age.months || 0);
+            const days = Math.floor(age.days || 0);
+
+            // Display the result
+            let resultText = `You are `;
+            if (years > 0) {
+                resultText += `${years} year${years !== 1 ? 's' : ''}`;
+            }
+            if (months > 0) {
+                if (years > 0) resultText += ` `;
+                resultText += `${months} month${months !== 1 ? 's' : ''}`;
+            }
+            if (days > 0) {
+                if (years > 0 || months > 0) resultText += ` `;
+                resultText += `${days} day${days !== 1 ? 's' : ''}`;
+            }
+
+            if (years === 0 && months === 0 && days === 0) {
+                resultText = "You were born today!";
+            } else {
+                resultText += ` old`;
+            }
+
+
+            resultDiv.textContent = resultText;
+            resultDiv.classList.remove('hidden');
+        });
+    </script>
+</body>
+
+</html>
