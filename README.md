@@ -2,18 +2,17 @@
 
 A simple web application that calculates your age based on the date of birth you provide.
 
+---
+
 ## 🚀 Live Demo
 
-👉 [Project Page on GitHub ]  :  
-
-Project URL  :     https://venukukunuru.github.io/Age-Calculator
-
-
-> Make sure GitHub Pages is enabled in your repository settings under the `main` branch (docs folder or root, depending on your setup).
+👉 **[View Project on GitHub Pages](https://venukukunuru.github.io/Age-Calculator/)**
 
 ---
 
 ## 📂 Project Structure
+
+
 
 Age-Calculator/
 ├── agePicker.html
